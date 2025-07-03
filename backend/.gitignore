@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+###  Windows' "Zone.Identifier" metadata files, which are not valid Git paths and shouldn't be tracked. ###
+*.Zone.Identifier
