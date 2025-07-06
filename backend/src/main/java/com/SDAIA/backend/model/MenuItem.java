@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "menu")
+@Table(name = "menu_item")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
