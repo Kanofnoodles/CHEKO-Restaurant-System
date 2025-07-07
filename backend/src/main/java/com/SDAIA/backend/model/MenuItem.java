@@ -23,6 +23,7 @@ public class MenuItem {
     private Double lat;
     private Double lng;
 
+    @JsonProperty("isBestSale")
     @Column(nullable = false)
     private boolean isBestSale = false;
 }
