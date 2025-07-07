@@ -4,8 +4,10 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import MenuList from "./components/MenuList";
 
-import Home from "./pages/Home";
+import { Home } from "./pages/Home";
 
-export default function App() {
+function App() {
   return <Home />;
 }
+
+export default App;

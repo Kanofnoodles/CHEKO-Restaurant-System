@@ -1,107 +1,162 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { ProductCard } from "../components/ProductCard";
+import type { MenuItem } from "../data/MenuItem";
+import { ThemeToggle } from "../components/ThemeToggleButton";
 
-type MenuItem = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  calorie: number;
-  category: string;
-  lat: number;
-  lng: number;
-};
-
-const categories = ["All", "Breakfast", "Cold", "Hot", "Dessert"];
-
-export default function Home() {
+export const Home: React.FC = () => {
   const [items, setItems] = useState<MenuItem[]>([]);
-  const [filter, setFilter] = useState("All");
+  const [cart, setCart] = useState<{ [id: number]: number }>({});
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [activeFilter, setActiveFilter] = useState("ALL");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/menu`)
+    fetch("http://localhost:8080/api/menu")
       .then((res) => res.json())
-      .then(setItems)
-      .catch(console.error);
+      .then((data) => setItems(data));
   }, []);
 
+  const handleQuantityChange = (id: number, quantity: number) => {
+    setCart((prev) => ({
+      ...prev,
+      [id]: quantity,
+    }));
+  };
+
+  const handleItemClick = (item: MenuItem) => {
+    setSelectedItem(item);
+  };
+
   const filteredItems =
-    filter === "All" ? items : items.filter((item) => item.category === filter);
+    activeFilter === "ALL"
+      ? items
+      : items.filter((item) => item.category === activeFilter);
+
+  const categories = [
+    { label: "All", value: "ALL" },
+    { label: "Hot", value: "Hot" },
+    { label: "Cold", value: "Cold" },
+    { label: "Breakfast", value: "Breakfast" },
+    { label: "Desserts", value: "Dessert" },
+  ];
 
   return (
-    <div className="min-h-screen bg-white px-6 py-8 text-gray-800">
-      {/* Navbar */}
-      <header className="flex justify-between items-center mb-8">
-        <div className="text-2xl font-bold">CHEKO</div>
-        <div className="flex items-center gap-2">
-          <button className="px-4 py-2 text-sm font-medium rounded-md bg-pink-100 text-pink-800 hover:bg-pink-200">
-            Menu
-          </button>
-          <button className="px-4 py-2 text-sm font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200">
-            Map
-          </button>
-          {/* Dark mode toggle placeholder */}
-          <button className="ml-4 px-3 py-1 text-sm border rounded-full">
-            ☀️ / 🌙
-          </button>
+    <div className="min-h-screen bg-[#F6F2ED] dark:bg-[#1C1C1E] text-gray-900 dark:text-white">
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        {/* Top Section */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10 gap-6">
+          <h1 className="text-5xl font-extrabold tracking-tight">Menu</h1>
+
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap justify-start md:justify-center gap-3">
+            {categories.map((cat) => (
+              <button
+                key={cat.value}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition ${
+                  activeFilter === cat.value
+                    ? "bg-black text-white dark:bg-white dark:text-black"
+                    : "bg-gray-200 text-black dark:bg-gray-700 dark:text-white"
+                }`}
+                onClick={() => setActiveFilter(cat.value)}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          <ThemeToggle />
         </div>
-      </header>
 
-      {/* Filter bar */}
-      <div className="flex flex-wrap gap-3 mb-8">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`px-5 py-2 rounded-full border transition ${
-              filter === cat
-                ? "bg-pink-500 text-white border-pink-500"
-                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Product grid */}
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {filteredItems.map((item) => {
-          console.log("Image URL:", item.image);
-          return (
-            <div
+        {/* Product Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+          {filteredItems.map((item) => (
+            <ProductCard
               key={item.id}
-              className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col"
-            >
-              <img
-                src={`/images/${item.image}`}
-                alt={item.name}
-                className="product-image"
-              />
-              <div className="flex justify-between items-center mb-1">
-                <h3 className="font-semibold">{item.name}</h3>
-                <span className="text-pink-600 font-bold">
-                  ${item.price.toFixed(2)}
-                </span>
+              item={item}
+              quantity={cart[item.id] || 0}
+              onQuantityChange={handleQuantityChange}
+              onClick={() => handleItemClick(item)}
+            />
+          ))}
+        </div>
+
+        {/* Product Detail Modal */}
+        {selectedItem && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
+            <div className="bg-white dark:bg-gray-900 rounded-[25px] w-full max-w-md overflow-hidden relative p-6 text-center">
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedItem(null)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white text-lg"
+              >
+                &times;
+              </button>
+
+              {/* Title + Badge */}
+              <div className="mb-2">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {selectedItem.name}
+                </h2>
+                <div className="flex justify-center items-center gap-2 mt-1">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {selectedItem.calorie} Cal
+                  </span>
+                  {selectedItem.isBestSale && (
+                    <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                      Best Sale
+                    </span>
+                  )}
+                  {/*ensures best sale only if selected item is a best seller*/}
+                </div>
               </div>
-              <p className="text-sm text-gray-500 line-clamp-2">
-                {item.description}
+
+              {/* Description */}
+              <p className="text-sm text-gray-500 dark:text-gray-400 px-2 mt-1 mb-4">
+                {selectedItem.description}
               </p>
-              <div className="flex justify-between mt-auto pt-3 text-sm">
-                <span>{item.calorie} cal</span>
-                <div className="flex gap-2">
-                  <button className="text-gray-400 hover:text-red-400">
-                    ❤️
+
+              {/* Image */}
+              <img
+                src={`/images/${selectedItem.image}`}
+                alt={selectedItem.name}
+                className="rounded-xl w-full h-48 object-cover mb-6"
+              />
+
+              {/* Price + Quantity */}
+              <div className="flex justify-between items-center px-2">
+                <span className="text-pink-400 text-lg font-bold">
+                  {selectedItem.price.toFixed(2)} SR
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    className="w-8 h-8 bg-pink-100 text-pink-700 rounded-full hover:bg-pink-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const q = Math.max(0, (cart[selectedItem.id] || 0) - 1);
+                      setCart((prev) => ({ ...prev, [selectedItem.id]: q }));
+                    }}
+                  >
+                    –
                   </button>
-                  <button className="text-gray-400 hover:text-pink-500">
-                    ➕
+                  <span className="text-gray-700 dark:text-white">
+                    {cart[selectedItem.id] || 0}
+                  </span>
+                  <button
+                    className="w-8 h-8 bg-pink-100 text-pink-700 rounded-full hover:bg-pink-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const q = (cart[selectedItem.id] || 0) + 1;
+                      setCart((prev) => ({ ...prev, [selectedItem.id]: q }));
+                    }}
+                  >
+                    +
                   </button>
                 </div>
               </div>
             </div>
-          );
-        })}
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};

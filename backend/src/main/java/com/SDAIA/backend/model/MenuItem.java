@@ -1,5 +1,7 @@
 package com.SDAIA.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,4 +22,7 @@ public class MenuItem {
     private String category;
     private Double lat;
     private Double lng;
+
+    @Column(nullable = false)
+    private boolean isBestSale = false;
 }
