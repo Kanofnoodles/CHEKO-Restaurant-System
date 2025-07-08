@@ -14,7 +14,6 @@ export const ProductCard: React.FC<Props> = ({
   onQuantityChange,
   onClick,
 }) => {
-  console.log("item:", item.name, "isBestSale:", item.isBestSale);
   return (
     <div
       className="rounded-2xl shadow-sm p-4 bg-white dark:bg-[#1C1C1E] cursor-pointer hover:shadow-md transition space-y-2"

@@ -102,7 +102,7 @@ export const Home: React.FC = () => {
         {/* Product Detail Modal */}
         {selectedItem && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
-            <div className="bg-white dark:bg-gray-900 rounded-[25px] w-full max-w-md overflow-hidden relative p-6 text-center">
+            <div className="bg-white dark:bg-gray-900 rounded-[25px] w-full max-w-md overflow-hidden relative p-6 text-center shadow-xl">
               {/* Close Button */}
               <button
                 onClick={() => setSelectedItem(null)}
@@ -111,26 +111,23 @@ export const Home: React.FC = () => {
                 &times;
               </button>
 
-              {/* Title + Badge */}
+              {/* Title + Best Sale */}
               <div className="mb-2">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white inline-flex items-center justify-center gap-2">
                   {selectedItem.name}
-                </h2>
-                <div className="flex justify-center items-center gap-2 mt-1">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {selectedItem.calorie} Cal
-                  </span>
                   {selectedItem.isBestSale && (
                     <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
                       Best Sale
                     </span>
                   )}
-                  {/*ensures best sale only if selected item is a best seller*/}
-                </div>
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {selectedItem.calorie} Cal
+                </p>
               </div>
 
               {/* Description */}
-              <p className="text-sm text-gray-500 dark:text-gray-400 px-2 mt-1 mb-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                 {selectedItem.description}
               </p>
 
@@ -138,11 +135,11 @@ export const Home: React.FC = () => {
               <img
                 src={`/images/${selectedItem.image}`}
                 alt={selectedItem.name}
-                className="rounded-xl w-full h-48 object-cover mb-6"
+                className="w-full h-48 object-cover rounded-xl mb-4"
               />
 
-              {/* Price + Quantity */}
-              <div className="flex justify-between items-center px-2">
+              {/* Price + Quantity Controls (Synced with cart) */}
+              <div className="flex justify-between items-center mt-4">
                 <span className="text-pink-400 text-lg font-bold">
                   {selectedItem.price.toFixed(2)} SR
                 </span>
@@ -150,24 +147,26 @@ export const Home: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <button
                     className="w-8 h-8 bg-pink-100 text-pink-700 rounded-full hover:bg-pink-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const q = Math.max(0, (cart[selectedItem.id] || 0) - 1);
-                      setCart((prev) => ({ ...prev, [selectedItem.id]: q }));
-                    }}
+                    onClick={() =>
+                      handleQuantityChange(
+                        selectedItem.id,
+                        Math.max(0, (cart[selectedItem.id] || 0) - 1)
+                      )
+                    }
                   >
                     –
                   </button>
-                  <span className="text-gray-700 dark:text-white">
+                  <span className="text-gray-900 dark:text-white">
                     {cart[selectedItem.id] || 0}
                   </span>
                   <button
                     className="w-8 h-8 bg-pink-100 text-pink-700 rounded-full hover:bg-pink-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const q = (cart[selectedItem.id] || 0) + 1;
-                      setCart((prev) => ({ ...prev, [selectedItem.id]: q }));
-                    }}
+                    onClick={() =>
+                      handleQuantityChange(
+                        selectedItem.id,
+                        (cart[selectedItem.id] || 0) + 1
+                      )
+                    }
                   >
                     +
                   </button>
