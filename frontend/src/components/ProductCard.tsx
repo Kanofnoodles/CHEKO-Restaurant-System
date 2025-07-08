@@ -51,7 +51,7 @@ export const ProductCard: React.FC<Props> = ({
 
           <div className="flex items-center gap-2">
             <button
-              className="w-8 h-8 bg-pink-100 text-pink-700 rounded-full hover:bg-pink-200"
+              className="w-8 h-8 bg-pink-100 text-pink-700 rounded-xl hover:bg-pink-200"
               onClick={(e) => {
                 e.stopPropagation();
                 onQuantityChange(item.id, Math.max(0, quantity - 1));
@@ -61,7 +61,7 @@ export const ProductCard: React.FC<Props> = ({
             </button>
             <span className="text-gray-900 dark:text-white">{quantity}</span>
             <button
-              className="w-8 h-8 bg-pink-100 text-pink-700 rounded-full hover:bg-pink-200"
+              className="w-8 h-8 bg-pink-100 text-pink-700 rounded-xl hover:bg-pink-200"
               onClick={(e) => {
                 e.stopPropagation();
                 onQuantityChange(item.id, quantity + 1);
