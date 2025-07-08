@@ -49,7 +49,7 @@ export const Home: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-black p-4 md:p-8">
+    <div className="min-h-screen bg-neutral-200 dark:bg-black p-4 md:p-8">
       {/* TopBar with nav & theme toggle */}
       <TopBar
         activeView={activeView}
