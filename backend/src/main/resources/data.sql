@@ -1,8 +1,6 @@
 
--- CHEKO Restaurant sample data with IDs
--- -----------------------------------------------------------------
+
 -- clear existing rows
-DELETE FROM menu_item;
 
 INSERT INTO menu_item (id, name, description, price, image, calorie, category, lat, lng, is_best_sale) VALUES
 (1, 'Margherita Pizza', 'Classic Italian pizza with tomatoes, mozzarella, and basil.', 7.38, 'Margarita.png', 647, 'Hot', 24.9065, 46.195, true);

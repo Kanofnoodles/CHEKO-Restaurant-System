@@ -5,6 +5,7 @@ import com.SDAIA.backend.repository.MenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,4 +29,10 @@ public class MenuService {
     public void deleteMenuItem(Long id) {
         menuRepository.deleteById(id);
     }
+
+    public List<MenuItem> getSecondHighestCaloriePerCategory() {
+        List<MenuItem> result = menuRepository.findSecondHighestCaloriePerCategory();
+        return result != null ? result : new ArrayList<>();
+    }
+
 }

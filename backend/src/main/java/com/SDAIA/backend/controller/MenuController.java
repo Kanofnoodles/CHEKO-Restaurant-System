@@ -34,4 +34,10 @@ public class MenuController {
     public void deleteMenuItem(@PathVariable Long id) {
         menuService.deleteMenuItem(id);
     }
+
+    @GetMapping("/menu/second-highest-calories")
+    public List<MenuItem> getSecondHighestCaloriePerCategory() {
+        return menuService.getSecondHighestCaloriePerCategory();
+    }
+
 }
